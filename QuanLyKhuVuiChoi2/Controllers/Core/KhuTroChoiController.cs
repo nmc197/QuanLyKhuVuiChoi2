@@ -125,8 +125,6 @@ namespace QuanLyKhuVuiChoi2.Controllers.Core
             }
             return BadRequest();
         }
-
-
         [HttpPost]
         [Route("api/Update")]
         public async Task<IActionResult> Update([FromBody]Khutrochoi model)
@@ -156,8 +154,6 @@ namespace QuanLyKhuVuiChoi2.Controllers.Core
             }
             return BadRequest();
         }
-
-
         [HttpPost]
         [Route("api/Delete")]
         public async Task<IActionResult> Delete([FromBody]Khutrochoi model)
