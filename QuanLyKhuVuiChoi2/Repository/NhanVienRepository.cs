@@ -83,12 +83,12 @@ namespace QuanLyKhuVuiChoi2.Repository
             int result = 0;
             if (db != null)
             {
-                var obj = await db.Khutrochois.FirstOrDefaultAsync(x => x.MaKhu == id);
+                var obj = await db.Nhanviens.FirstOrDefaultAsync(x => x.MaNv == id);
                 //Update that obj
                 if (obj != null)
                 {
                     //Delete that post
-                    db.Khutrochois.Remove(obj);
+                    db.Nhanviens.Remove(obj);
 
                     //Commit the transaction
                     result = await db.SaveChangesAsync();
@@ -104,9 +104,9 @@ namespace QuanLyKhuVuiChoi2.Repository
             if (db != null)
             {
                 return await (
-                    from row in db.Khutrochois
-                    where ((row.TenKhu.Contains(keyword) || row.MaKhu.Contains(keyword)))
-                    orderby row.MaKhu descending
+                    from row in db.Nhanviens
+                    where ((row.TenNv.Contains(keyword) || row.MaNv.Contains(keyword)))
+                    orderby row.MaNv descending
                     select row
                 ).ToListAsync();
             }

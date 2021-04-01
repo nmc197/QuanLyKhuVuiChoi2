@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace QuanLyKhuVuiChoi2.Repository
 {
-    interface INhanVienRepository
+    public interface INhanVienRepository
     {
         Task<List<Nhanvien>> List();
 

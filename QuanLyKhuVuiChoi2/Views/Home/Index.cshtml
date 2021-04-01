@@ -286,6 +286,7 @@
 <script>
     $(document).ready(function () {
         setTimeout(function () { loadData(); }, 460);
+        setTimeout(function () { loadDataNhanVien(); }, 460);
     });
 </script>
 
@@ -629,7 +630,7 @@
 </script>
 
 <script>
-    var showItemsNhanVien = ["maNV", "tenNV", "ngaySinh", "gioiTinh", "maKhuPhuTrach","maPB","luong","queQuan"];
+    var showItemsNhanVien = ["maNv", "tenNv", "ngaySinh", "gioiTinh", "maKhuPhuTrach","maPb","luong","queQuan"];
 
     var dataSourceNhanVien = [];
     var updatingItemIdNhanVien = 0;
@@ -644,7 +645,7 @@
             success: function (responseData) {
                 debugger;
                 var data = responseData.data;
-                dataSource = data;
+                dataSourceNhanVien = data;
                 data.forEach(function (item, index) {
                     // console.log(item, index);
                     var rowContent = "";
@@ -652,43 +653,41 @@
                     for (var key in item) {
                         if (item.hasOwnProperty(key)) {
                             // console.log(key + " -> " + item[key]);
-                            if (showItems.includes(key)) {
+                            if (showItemsNhanVien.includes(key)) {
                                 if (key == "photo") {
-                                    rowContent += "<td class='row" + item.maKhu + "-column column-" + key + "' property='" + key + "'><span style='color:red'><i class='fa fa-times' aria-hidden='true' style='font-size:1.5em'></i></span></td>";
+                                    rowContent += "<td class='row" + item.maNv + "-column column-" + key + "' property='" + key + "'><span style='color:red'><i class='fa fa-times' aria-hidden='true' style='font-size:1.5em'></i></span></td>";
 
                                 }
                                 else {
-                                    rowContent += "<td class='row" + item.maKhu + "-column column-" + key + "' property='" + key + "'>" + item[key] + "</td>";
+                                    rowContent += "<td class='row" + item.maNv + "-column column-" + key + "' property='" + key + "'>" + item[key] + "</td>";
                                 }
                             }
                         }
                     }
-                    rowContent += '<td style="text-align: center;"><a onclick="editItem(\'' + item.maKhu + '\')"><i class="fa fa-edit fa-2x" style="color:#03a9f4"></i></a></td>';
-                    rowContent += '<td style="text-align: center;"><a onclick="deleteItem(\'' + item.maKhu + '\')"><i class="fa fa-trash fa-2x" style ="color:#e91e63"></i></a></td>';
+                    rowContent += '<td style="text-align: center;"><a onclick="editItem(\'' + item.maNv + '\')"><i class="fa fa-edit fa-2x" style="color:#03a9f4"></i></a></td>';
+                    rowContent += '<td style="text-align: center;"><a onclick="deleteItem(\'' + item.maNv + '\')"><i class="fa fa-trash fa-2x" style ="color:#e91e63"></i></a></td>';
 
-                    var newRow = "<tr id='row" + item.maKhu + "' >" + rowContent + "</tr>";
-                    $(newRow).appendTo($("#tableData tbody"));
+                    var newRow = "<tr id='row" + item.maNv + "' >" + rowContent + "</tr>";
+                    $(newRow).appendTo($("#tableDataNhanVien tbody"));
 
                     // $("#tableData #dummyRow").after("<tr id='row"+item.id+"' >" + rowContent + "</tr>");
                 });
 
                 //Init datatable
-                if (tableUpdating === 0) {
-                    initTablePage();
+                if (tableUpdatingNhanVien === 0) {
+                    initTablePageNhanVien();
                 }
 
                 //update data with foreign key
-                updateTable();
             },
             error: function (e) {
                 //console.log(e.message);
-                initTablePage();
+                initTablePageNhanVien();
             }
         });
     }
-
     function initTablePageNhanVien() {
-        table = $('#tableData').DataTable({
+        tableNhanVien = $('#tableDataNhanVien').DataTable({
             aLengthMenu: [
                 [-1, 10, 25, 50, 100, 200],
                 ['Tất cả', 10, 25, 50, 100, 200]
@@ -700,8 +699,8 @@
                 "sUrl": "/js/Vietnamese.json"
             },
             "initComplete": function (settings, json) {
-                table.on('order.dt search.dt', function () {
-                    table.column(0, {
+                tableNhanVien.on('order.dt search.dt', function () {
+                    tableNhanVien.column(0, {
                         search: 'applied',
                         order: 'applied'
                     }).nodes().each(function (cell, i) {
@@ -709,12 +708,12 @@
                     });
                 }).draw();
 
-                $('#tableData tfoot th').each(function () {
+                $('#tableDataNhanVien tfoot th').each(function () {
                     var title = $(this).text();
                     $(this).html("<input type='text' class='tableFooterFilter' placeholder=' ' />");
                 });
 
-                table.columns().every(function () {
+                tableNhanVien.columns().every(function () {
                     var that = this;
                     $('input.tableFooterFilter', this.footer()).on('keyup change', function () {
                         if (that.search() !== this.value) {
@@ -726,31 +725,33 @@
         });
 
         setTimeout(function () {
-            table.page.len(18).draw();
+            tableNhanVien.page.len(18).draw();
         }, 1000);
     }
-    $(".btn.btn-success").click(function () {
-        $(".modal-body").toggle("show");
-    });
     function editItemNhanVien(id) {
         debugger;
         updatingItemID = id;
         if (id != "") {
-            $("#modal-id").modal('show');
+            $("#modal-id-NhanVien").modal('show');
         }
         //$("#modal-id").modal('show');
-        let obj = getItemByID(id);
-        $("#maKhu").val(id != "" ? obj.maKhu : "");
-        $("#maNVQL").val(id != "" ? obj.maNvql : "");
-        $("#tenKhu").val(id != "" ? obj.tenKhu : "");
-        $("#giaVeTreEm").val(id != "" ? obj.giaVeTreEm : "");
-        $("#giaVeNguoiLon").val(id != "" ? obj.giaVeNguoiLon : "");
+        let obj = getItemByIDNhanVien(id);
+        $("#maNV").val(id != "" ? obj.maNv : "");
+        $("#tenNV").val(id != "" ? obj.tenNV : "");
+        $("#gioiTinh").val(id != "" ? obj.gioiTinh : "");
+        $("#ngaySinh").val(id != "" ? obj.ngaySinh : "");
+        $("#maKhuPhuTrach").val(id != "" ? obj.maKhuPhuTrach : "");
+        $("#maPB").val(id != "" ? obj.maPb : "");
+        $("#luong").val(id != "" ? obj.luong : "");
+        $("#queQuan").val(id != "" ? obj.queQuan : "");
+
+
         //formatNumber();
     }
     function updateItemNhanVien(id) {
         debugger;
         var actionName = (id == 0 ? "Bạn muốn tạo mới" : "Cập nhật");
-        let obj = getItemByID(id);
+        let obj = getItemByIDNhanVien(id);
         let objName = id > 0 ? obj.name : "item";
 
         //validateInputNumber();
@@ -761,11 +762,14 @@
         // "createdTime": $("#topicCreatedTime").val(),
         // "active": $("#topicActive").val()
         var updatingObj = {
-            "maKhu": $("#maKhu").val(),
-            "maNVQL": $("#maNVQL").val(),
-            "tenKhu": $("#tenKhu").val(),
-            "giaVeTreEm": $("#giaVeTreEm").val(),
-            "giaVeNguoiLon": $("#giaVeNguoiLon").val(),
+            "maNV": $("#maNV").val(),
+            "tenNV": $("#tenNV").val(),
+            "ngaySinh": $("#ngaySinh").val(),
+            "gioiTinh": $("#gioiTinh").val(),
+            "maKhuPhuTrach": $("#maKhuPhuTrach").val(),
+            "maPB": $("#maPB").val(),
+            "luong": $("#luong").val(),
+            "queQuan": $("#queQuan").val(),
         };
 
         // correcting data
@@ -787,7 +791,7 @@
                 //CALL AJAX TO UPDATE
                 if (id > 0) {
                     $.ajax({
-                        url: systemURL + "khutrochoi/api/update",
+                        url: systemURL + "nhanvien/api/update",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(updatingObj),
@@ -799,7 +803,7 @@
                                     'Đã cập nhật \"' + objName + '\" ',
                                     'success'
                                 );
-                                updateTable(id, updatingObj, "update");
+                                updateTableNhanVien(id, updatingObj, "update");
                                 var updatedItemIndex = dataSource.findIndex(item => parseInt(item.id) === id);
                                 dataSource[updatedItemIndex] = updatingObj;
                             }
@@ -820,7 +824,7 @@
                     updatingObj.id = 1;
                     console.log(updatingObj);
                     $.ajax({
-                        url: systemURL + "khutrochoi/api/add",
+                        url: systemURL + "nhanvien/api/add",
                         type: "POST",
                         contentType: "application/json",
                         data: JSON.stringify(updatingObj),
@@ -833,8 +837,8 @@
                                     'success'
                                 );
                                 updatingObj = responseData.data;
-                                dataSource.push(updatingObj);
-                                updateTable(0, updatingObj, "add");
+                                dataSourceNhanVien.push(updatingObj);
+                                updateTableNhanVien(0, updatingObj, "add");
                             }
                         },
                         error: function (e) {
@@ -851,7 +855,7 @@
         })
     }
     function getItemByIDNhanVien(id) {
-        const result = dataSource.find(item => item.maKhu === id);
+        const result = dataSource.find(item => item.maNv === id);
         return result;
     }
     function updateTableNhanVien(id, obj, action) {
@@ -924,7 +928,7 @@
     }
     function deleteItemNhanVien(id) {
         debugger;
-        let obj = getItemByID(id);
+        let obj = getItemByIDNhanVien(id);
         Swal.fire({
             title: 'Xác nhận thay đổi?',
             icon: 'warning',
@@ -938,7 +942,7 @@
 
                 //CALL AJAX TO DELETE
                 $.ajax({
-                    url: systemURL + "KhuTroChoi/api/delete",
+                    url: systemURL + "nhanvien/api/delete",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ "maKhu": id }),

@@ -29,6 +29,8 @@ namespace QuanLyKhuVuiChoi2
             services.AddControllersWithViews();
             services.AddDbContext<AmusementParkContext>(item => item.UseSqlServer(Configuration.GetConnectionString("BlogDBConnection")));
             services.AddScoped<IKhuTroChoiRepository, KhuTroChoiRepository>();
+            services.AddScoped<INhanVienRepository, NhanVienRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
